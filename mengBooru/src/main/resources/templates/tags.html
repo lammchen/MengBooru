@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Tags - MengBooru</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-link {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #4285f4;
+        }
+
+        .active {
+            font-weight: bold;
+            border-bottom: 2px solid #4285f4;
+        }
+
+        .tags-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .tag-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.2s;
+        }
+
+        .tag-item:hover {
+            background-color: #eaeaea;
+        }
+
+        .tag-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .tag-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .tag-info {
+            flex-grow: 1;
+        }
+
+        .tag-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .tag-count {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .tag-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tag-category {
+            background-color: #e0e0e0;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .tag-category.active {
+            background-color: #4285f4;
+            color: white;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>
+        <a href="/">mengBooru</a>
+    </h1>
+    <div>
+        <a href="/collections" class="nav-link">Collections</a>
+        <a href="/tags" class="nav-link active">Tags</a>
+    </div>
+</header>
+
+<div class="container">
+    <h2>Tags</h2>
+
+    <div class="search-bar">
+        <input type="text" id="tagSearch" placeholder="Rechercher un tag..." onkeyup="filterTags()">
+    </div>
+
+    <div th:if="${tagsWithStats.isEmpty()}" class="empty-message">
+        <p>Aucun tag n'a encore été créé.</p>
+        <p>Utilisez l'extension Firefox pour ajouter des médias avec des tags.</p>
+    </div>
+
+    <div th:unless="${tagsWithStats.isEmpty()}" class="tags-container">
+        <div class="tags-grid">
+            <a th:each="entry : ${tagsWithStats}"
+               th:href="@{/(tag=${entry.key})}"
+               class="tag-item">
+                <div class="tag-preview">
+                    <img th:if="${entry.value.previewMedia != null}"
+                         th:src="@{/api/media/{id}(id=${entry.value.previewMedia.id})}"
+                         th:alt="${entry.key}">
+                    <div th:unless="${entry.value.previewMedia != null}"
+                         style="background-color: #eee; width: 100%; height: 100%;"></div>
+                </div>
+                <div class="tag-info">
+                    <div class="tag-name" th:text="${entry.key}">Nom du tag</div>
+                    <div class="tag-count" th:text="${entry.value.count} + ' média' + (${entry.value.count} > 1 ? 's' : '')">
+                        Nombre de médias
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterTags() {
+        const input = document.getElementById('tagSearch');
+        const filter = input.value.toLowerCase();
+        const tags = document.querySelectorAll('.tag-item');
+
+        tags.forEach(tag => {
+            const tagName = tag.querySelector('.tag-name').textContent.toLowerCase();
+            if (tagName.includes(filter)) {
+                tag.style.display = '';
+            } else {
+                tag.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

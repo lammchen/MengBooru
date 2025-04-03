@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Collections - MengBooru</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-link {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #4285f4;
+        }
+
+        .active {
+            font-weight: bold;
+            border-bottom: 2px solid #4285f4;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .collection-card {
+            background-color: white;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .collection-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .collection-preview {
+            position: relative;
+            height: 150px;
+            overflow: hidden;
+            background-color: #eee;
+        }
+
+        .collection-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .collection-info {
+            padding: 15px;
+        }
+
+        .collection-name {
+            font-size: 18px;
+            margin: 0 0 5px 0;
+        }
+
+        .collection-stats {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>
+        <a href="/">mengBooru</a>
+    </h1>
+    <div>
+        <a href="/collections" class="nav-link active">Collections</a>
+        <a href="/tags" class="nav-link">Tags</a>
+    </div>
+</header>
+
+<div class="container">
+    <h2>Collections</h2>
+
+    <div th:if="${collectionsWithStats.isEmpty()}" class="empty-message">
+        <p>Aucune collection n'a encore été créée.</p>
+        <p>Utilisez l'extension Firefox pour ajouter des médias et créer des collections.</p>
+    </div>
+
+    <div th:unless="${collectionsWithStats.isEmpty()}" class="collections-grid">
+        <a th:each="entry : ${collectionsWithStats}"
+           th:href="@{/(collection=${entry.key})}"
+           class="collection-card">
+            <div class="collection-preview">
+                <img th:if="${entry.value.previewMedia != null}"
+                     th:src="@{/api/media/{id}(id=${entry.value.previewMedia.id})}"
+                     th:alt="${entry.key}">
+                <div th:unless="${entry.value.previewMedia != null}"
+                     style="display: flex; align-items: center; justify-content: center; height: 100%; color: #999;">
+                    <span>Pas d'aperçu disponible</span>
+                </div>
+            </div>
+            <div class="collection-info">
+                <h3 class="collection-name" th:text="${entry.key}">Nom de la collection</h3>
+                <div class="collection-stats">
+                        <span th:text="${entry.value.count} + ' média' + (${entry.value.count} > 1 ? 's' : '')">
+                            Nombre de médias
+                        </span>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+</body>
+</html>

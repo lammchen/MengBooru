@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css"/>
+  <title>MengBooru Media Collector</title>
+</head>
+<body>
+  <div id="container">
+    <h1>MengBooru</h1>
+    <div id="media-preview">
+      <img id="media-image" src="" alt="Aperçu du média">
+    </div>
+    
+    <form id="upload-form">
+      <div class="form-group">
+        <label for="name">Nom du fichier</label>
+        <input type="text" id="name" name="name" placeholder="Nom du fichier (optionnel)">
+      </div>
+      
+      <div class="form-group">
+        <label for="tags">Tags (séparés par des virgules)</label>
+        <input type="text" id="tags" name="tags" placeholder="tag1, tag2, tag3...">
+      </div>
+      
+      <div class="form-group">
+        <label for="collection">Collection</label>
+        <select id="collection" name="collection">
+          <option value="board">board (défaut)</option>
+          <!-- Les autres collections seront chargées dynamiquement -->
+        </select>
+        <input type="text" id="new-collection" name="new-collection" placeholder="Nouvelle collection">
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" id="save-button">Sauvegarder</button>
+        <button type="button" id="dashboard-button" class="secondary-button">Ouvrir le Dashboard</button>
+        <div id="status-message"></div>
+      </div>
+    </form>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="dashboard.css"/>
+  <title>mengBooru Dashboard</title>
+</head>
+<body>
+  <div id="dashboard-container">
+    <header>
+      <div class="logo">
+        <img src="../icons/icon_514.png" alt="MengBooru Logo">
+        <h1>mengBooru</h1>
+      </div>
+      <div class="actions">
+        <button id="open-web-interface" class="button">
+          Ouvrir l'interface web
+        </button>
+      </div>
+    </header>
+
+    <div class="dashboard-content">
+      <div class="sidebar">
+        <nav>
+          <ul>
+            <li class="nav-item active" data-tab="recent">Médias récents</li>
+            <li class="nav-item" data-tab="collections">Collections</li>
+            <li class="nav-item" data-tab="tags">Tags</li>
+            <li class="nav-item" data-tab="search">Recherche</li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="main-content">
+        <!-- Onglet des médias récents -->
+        <div id="recent" class="tab-content active">
+          <h2>Médias récents</h2>
+          <div class="recent-grid media-grid" id="recent-media-container">
+            <div class="loading">Chargement des médias récents...</div>
+          </div>
+        </div>
+
+        <!-- Onglet des collections -->
+        <div id="collections" class="tab-content">
+          <h2>Collections</h2>
+          <div class="collections-grid" id="collections-container">
+            <div class="loading">Chargement des collections...</div>
+          </div>
+        </div>
+
+        <!-- Onglet des tags -->
+        <div id="tags" class="tab-content">
+          <h2>Tags populaires</h2>
+          <div class="tags-container" id="tags-container">
+            <div class="loading">Chargement des tags...</div>
+          </div>
+        </div>
+
+        <!-- Onglet de recherche -->
+        <div id="search" class="tab-content">
+          <h2>Recherche</h2>
+          <div class="search-form">
+            <div class="search-filters">
+              <input type="text" id="search-tags" placeholder="Rechercher par tags (séparés par des virgules)">
+              <select id="search-collection">
+                <option value="">Toutes les collections</option>
+                <!-- Les collections seront chargées dynamiquement -->
+              </select>
+              <button id="search-button" class="button">Rechercher</button>
+            </div>
+          </div>
+          <div id="search-results" class="media-grid">
+            <!-- Résultats de recherche -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="status-bar">
+      <div id="connection-status">Connecté au serveur</div>
+      <div id="stats">
+        <span id="media-count">0 médias</span> •
+        <span id="collection-count">0 collections</span> •
+        <span id="tag-count">0 tags</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
