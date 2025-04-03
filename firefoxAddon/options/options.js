@@ -1,4 +1,4 @@
-// Charger les options sauvegardées
+// Chargement des options sauvegardées
 document.addEventListener('DOMContentLoaded', () => {
     browser.storage.local.get('serverUrl', (result) => {
       if (result.serverUrl) {
@@ -6,39 +6,34 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
     
-    // Gérer la soumission du formulaire
     document.getElementById('options-form').addEventListener('submit', (event) => {
       event.preventDefault();
       
       const serverUrl = document.getElementById('server-url').value.trim();
       
-      // Valider l'URL
       if (!serverUrl) {
         showStatus('Veuillez entrer une URL de serveur valide', 'error');
         return;
       }
       
-      // Sauvegarder les options
       browser.storage.local.set({ serverUrl }, () => {
         showStatus('Options sauvegardées avec succès', 'success');
         
-        // Tester la connexion au serveur
         testServerConnection(serverUrl);
       });
     });
   });
   
-  // Afficher un message de statut
+  // Afficher le message de statut
   function showStatus(message, type) {
     const statusElement = document.getElementById('status');
     statusElement.textContent = message;
     statusElement.className = `status ${type}`;
     statusElement.style.display = 'block';
     
-    // Masquer le message après un certain temps
     setTimeout(() => {
       statusElement.style.display = 'none';
-    }, 3000);
+    }, 3000); //timeout de co
   }
   
   // Tester la connexion au serveur

@@ -1,40 +1,30 @@
-// Configuration et variables globales
 let serverUrl = 'http://localhost:8080';
 let mediaData = [];
 let collectionsData = {};
 let tagsData = {};
 
-// Au chargement du document
 document.addEventListener('DOMContentLoaded', () => {
-  // Récupérer l'URL du serveur depuis les options
   browser.storage.local.get('serverUrl', (result) => {
     if (result.serverUrl) {
       serverUrl = result.serverUrl;
     }
     
-    // Initialiser le dashboard
     initDashboard();
   });
   
-  // Gestionnaire d'événements pour les onglets
   setupTabs();
   
-  // Configuration du bouton d'ouverture de l'interface web
   document.getElementById('open-web-interface').addEventListener('click', () => {
     browser.tabs.create({ url: serverUrl });
   });
   
-  // Configuration du formulaire de recherche
   document.getElementById('search-button').addEventListener('click', performSearch);
 });
 
 // Initialisation du dashboard
 async function initDashboard() {
   try {
-    // Vérifier la connexion au serveur
     await checkServerConnection();
-    
-    // Charger les données de base
     await Promise.all([
       loadRecentMedia(),
       loadCollections(),
@@ -48,7 +38,7 @@ async function initDashboard() {
   }
 }
 
-// Vérifier la connexion au serveur
+// Vérif. de la la connexion au serveur
 async function checkServerConnection() {
   try {
     const response = await fetch(`${serverUrl}/api/media/collections`);
@@ -65,7 +55,7 @@ async function checkServerConnection() {
   }
 }
 
-// Mettre à jour le statut de connexion
+// MAJ du statut de connexion
 function setConnectionStatus(isConnected) {
   const statusElement = document.getElementById('connection-status');
   if (isConnected) {
@@ -94,7 +84,7 @@ async function loadRecentMedia() {
       return;
     }
     
-    // Afficher les 12 médias les plus récents
+    // Afficher les 12 médias les plus récents (12 -> default)
     container.innerHTML = '';
     mediaData.slice(0, 12).forEach(media => {
       container.appendChild(createMediaElement(media));
@@ -107,19 +97,18 @@ async function loadRecentMedia() {
   }
 }
 
-// Chargement des collections
+// Chargement des collections de l'user
 async function loadCollections() {
   try {
     const [collectionsResponse, collectionsWithStatsResponse] = await Promise.all([
       fetch(`${serverUrl}/api/media/collections`),
-      fetch(`${serverUrl}/collections`) // Endpoint spécifique qui retourne les stats
+      fetch(`${serverUrl}/collections`) // pour les stats
     ]);
     
     if (!collectionsResponse.ok) throw new Error('Erreur serveur - collections');
     
     const collections = await collectionsResponse.json();
     
-    // Remplir le sélecteur de collection pour la recherche
     const selectElement = document.getElementById('search-collection');
     selectElement.innerHTML = '<option value="">Toutes les collections</option>';
     
@@ -130,12 +119,10 @@ async function loadCollections() {
       selectElement.appendChild(option);
     });
     
-    // Si les données avec statistiques sont disponibles
     if (collectionsWithStatsResponse.ok) {
       const stats = await collectionsWithStatsResponse.json();
       collectionsData = stats;
-      
-      // Afficher les collections dans l'onglet collections
+      // affichage 
       const container = document.getElementById('collections-container');
       
       if (Object.keys(stats).length === 0) {
@@ -161,17 +148,16 @@ async function loadTags() {
   try {
     const [tagsResponse, tagsWithStatsResponse] = await Promise.all([
       fetch(`${serverUrl}/api/media/tags`),
-      fetch(`${serverUrl}/tags`) // Endpoint spécifique qui retourne les stats
+      fetch(`${serverUrl}/tags`) // stats
     ]);
     
     if (!tagsResponse.ok) throw new Error('Erreur serveur - tags');
     
-    // Si les données avec statistiques sont disponibles
     if (tagsWithStatsResponse.ok) {
       const stats = await tagsWithStatsResponse.json();
       tagsData = stats;
-      
-      // Afficher les tags dans l'onglet tags
+
+      // affichage
       const container = document.getElementById('tags-container');
       
       if (Object.keys(stats).length === 0) {
@@ -192,10 +178,10 @@ async function loadTags() {
   }
 }
 
-// Chargement des statistiques générales
+// Chargement des stats générales
 async function loadStats() {
   try {
-    // Compter les éléments déjà chargés
+    // Elements déjà chargés
     document.getElementById('media-count').textContent = 
       `${mediaData.length} média${mediaData.length > 1 ? 's' : ''}`;
     
@@ -210,7 +196,7 @@ async function loadStats() {
   }
 }
 
-// Créer un élément média
+// Créer un élément Media
 function createMediaElement(media) {
   const mediaElement = document.createElement('div');
   mediaElement.className = 'media-item';
@@ -293,20 +279,17 @@ function createTagElement(name, data) {
   return tagElement;
 }
 
-// Configurer les onglets
+// Config les onglets
 function setupTabs() {
   const tabs = document.querySelectorAll('.nav-item');
   
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      // Enlever la classe active de tous les onglets
       document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       
-      // Ajouter la classe active à l'onglet cliqué
       tab.classList.add('active');
       
-      // Afficher le contenu correspondant
       const tabId = tab.getAttribute('data-tab');
       document.getElementById(tabId).classList.add('active');
     });
@@ -327,10 +310,9 @@ async function performSearch() {
     const resultsContainer = document.getElementById('search-results');
     resultsContainer.innerHTML = '<div class="loading">Recherche en cours...</div>';
     
-    // Construire l'URL de recherche
     let searchUrl = `${serverUrl}/api/media?`;
     if (tagsInput) {
-      // Si plusieurs tags sont entrés, nous utilisons le premier pour l'API
+      // Si plusieurs tags, on fetch le premier pour l'API
       const firstTag = tagsInput.split(',')[0].trim();
       searchUrl += `tag=${encodeURIComponent(firstTag)}`;
     }
