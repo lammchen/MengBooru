@@ -2,7 +2,7 @@
 
 ## Backend (Spring Boot)
 
-Le backend de MengBooru est une application Spring Boot utilisant H2 comme base de données et est structuré selon mes meilleures pratiques ;
+Le backend de MengBooru est une application Spring Boot utilisant H2 comme base de données et est structuré selon les pratiques suivantes ;
 
 ### Config :
 - Support de H2 avec console web
